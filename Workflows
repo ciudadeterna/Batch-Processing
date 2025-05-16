@@ -1,0 +1,30 @@
+name: Deploy Flask API
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run API (test mode)
+      run: |
+        nohup python app.py &
+        sleep 10
+        curl -X POST http://127.0.0.1:5000/predict \
+        -H "Content-Type: application/json" \
+        -d '{"images": []}'
